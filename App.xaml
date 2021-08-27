@@ -1,0 +1,14 @@
+﻿<Application x:Class="GenshinImpact_ServerConverter.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:GenshinImpact_ServerConverter"
+             Startup="LaunchFuncation">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source=".\Languages\English.xaml"/>
+                <ResourceDictionary Source=".\StyleRes.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,39 @@
+﻿<Window x:Class="GenshinImpact_ServerConverter.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GenshinImpact_ServerConverter"
+        mc:Ignorable="d"
+        Title="{StaticResource MainWindow_Title}" Height="450" Width="800" Background="Transparent" OpacityMask="White" ResizeMode="NoResize" WindowStyle="None" AllowsTransparency="True" WindowStartupLocation="CenterScreen">
+    <Grid x:Name="MainWindowGrid" MouseLeftButtonDown="MainWindowGrid_MouseLeftButtonDown" MouseLeftButtonUp="MainWindowGrid_MouseLeftButtonUp" MouseMove="MainWindowGrid_MouseMove">
+        <Border CornerRadius="5,5,5,5"  BorderBrush="SkyBlue" BorderThickness="1px">
+            <Border.Background>
+                <ImageBrush x:Name="BackGroundImage"/>
+            </Border.Background>
+        </Border>
+        <MediaElement Name="MP4Player" LoadedBehavior="Manual" Volume="0" Loaded="MP4Player_Loaded" MediaEnded="MP4Player_MediaEnded" Margin="2,2,2,2"/>
+        <Grid Background="#FF958F8F" Opacity="0.1"/>
+        <Button Name="btn_CloseButton" Click="btn_CloseButton_Click" Height="21" VerticalAlignment="Top" HorizontalAlignment="Right" Width="22" Style="{StaticResource CloseButtonStyle}" ToolTip="{StaticResource Tip_CloseButton}" Margin="0,10,10,0"/>
+        <Button Name="btn_MinButton" Click="btn_MinButton_Click" Height="21" VerticalAlignment="Top" HorizontalAlignment="Right" Width="44" Style="{StaticResource MinButtonStyle}" ToolTip="{StaticResource Tip_MinButton}" Margin="0,10,40,0"/>
+        <Label Content="{StaticResource MainWindow_Title}" Margin="0,0,0,420" HorizontalAlignment="Left" Width="706" FontWeight="Bold" Foreground="White"/>
+
+        <Grid Margin="0,35,0,0" Background="Transparent">
+            <Grid Margin="338,92,337,206" x:Name="LogoImageBox" MouseLeftButtonDown="LogoImage_MouseLeftButtonDown" >
+                <Border BorderBrush="White" BorderThickness="1px" CornerRadius="15">
+                    <Border.Background>
+                        <ImageBrush x:Name="LogoImage" ImageSource="Images/Icos/NoConfig.jpg"/>
+                    </Border.Background>
+                </Border>
+            </Grid>
+            <ComboBox Margin="281,275,281,112" Name="ServerSelectBox" Style="{StaticResource ServerSelectBoxStyle}" Background="White" SelectionChanged="ServerSelectBox_SelectionChanged" Height="28">
+                <ComboBoxItem Content="{StaticResource MainWindow_SelectedItem_OfficialServer}"/>
+                <ComboBoxItem Content="{StaticResource MainWindow_SelectedItem_BiliBiliServer}"/>
+            </ComboBox>
+            <Label x:Name="Error_TipBox" Margin="0,387,0,0" Foreground="Red" FontWeight="Bold" Content="{StaticResource MainWindow_Label_PathError}" HorizontalContentAlignment="Center"/>
+            <Button Margin="360,230,361,161" Name="btn_SettingButton" Style="{StaticResource LaunchButtonStyle}" Content="{StaticResource btn_MainWindow_SettingButton}" Click="btn_SettingButton_Click"/>
+            <Label Margin="0,387,465,0" Foreground="White" FontWeight="Bold" FontSize="14px" Content="{StaticResource MainWindow_Label_GameVersion}" VerticalContentAlignment="Top" x:Name="Label_GameVersion"/>
+            <Button Margin="343,326,343,50" Content="{StaticResource btn_MainWindow_LaunchGame}" Name="btn_LaunchGame" Click="btn_LaunchGame_Click" Style="{StaticResource LaunchButtonStyle}"/>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,79 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:System;assembly=mscorlib">
+    <s:String x:Key="MainWindow_Title">Genshin Impact Server Converter</s:String>
+    <s:String x:Key="btn_MainWindow_LaunchGame">Launch Game</s:String>
+    <s:String x:Key="btn_MainWindow_SettingButton">Settings</s:String>
+    <s:String x:Key="Error_NotTargetDir">This is Genshin Impact's directory,Please move me to other directory.</s:String>
+    <s:String x:Key="Error_MessageBoxTitle">Error</s:String>
+    <s:String x:Key="MainWindow_Label_GameVersion">Game Version:</s:String>
+    <s:String x:Key="MainWindow_SelectedItem_OfficialServer">Official Server</s:String>
+    <s:String x:Key="MainWindow_SelectedItem_BiliBiliServer">BiliBili Server</s:String>
+    <s:String x:Key="SettingWindow_Button_ExitWindow">Exit</s:String>
+    <s:String x:Key="SettingWindow_Button_ApplySetting">Apply</s:String>
+    <s:String x:Key="SettingWindow_Label_GamePath">Game Path:</s:String>
+    <s:String x:Key="SettingWindow_Button_Browe">Browse..</s:String>
+    <s:String x:Key="SettingWindow_Button_About">About..</s:String>
+    <s:String x:Key="SettingWindow_Dialog_BrowseTarget">Please chose your Genshin Impact install path:</s:String>
+    <s:String x:Key="MainWindow_Label_PathError">The Floder Setting has a error,please go to the setting window and try again.</s:String>
+    <s:String x:Key="SettingWindow_Message_IsNotCheckedPath">It's not Genshin Impact Directory,please chose other.</s:String>
+    <s:String x:Key="SettingWindow_Label_OtherFucation">Other Features:</s:String>
+    <s:String x:Key="SettingWindow_Button_SendToDesktop">Send to Desktop</s:String>
+    <s:String x:Key="Tip_MessageBoxTitle">Tip</s:String>
+    <s:String x:Key="Tip_CreateShotOK">Has sended to desktop.</s:String>
+    <s:String x:Key="Tip_CloseButton">Exit.</s:String>
+    <s:String x:Key="Error_LaunchOlne">Only Launch a application.</s:String>
+    <s:String x:Key="SettingWindow_Button_ClearLoginInfo">Clear All Loginings</s:String>
+    <s:String x:Key="Tip_NoKnoewConfig">Is a NoKnow Config,To Continue?</s:String>
+    <s:String x:Key="Tip_ClearAllLoginInfo">Clear All Login Information?</s:String>
+    <s:String x:Key="Tip_ClearLoginedInfo">Clear Completed.</s:String>
+    <s:String x:Key="SettingWindow_Button_RestoreBack">Restore the Backup</s:String>
+    <s:String x:Key="Tip_RestoreBackage">Are you sure to restore this backup?</s:String>
+    <s:String x:Key="Error_RestoreBackage">No Backup</s:String>
+    <s:String x:Key="SettingWindow_Button_ReSetBackStatues">Reset Backup States</s:String>
+    <s:String x:Key="Tip_ReSetBackage">Are you sure to reset this backup?</s:String>
+    <s:String x:Key="SettingWindow_title">Settings</s:String>
+    <s:String x:Key="SettingWindow_TabButton_GernelSetting">&#160;&#160;&#160;&#160;General Settings</s:String>
+    <s:String x:Key="SettingWindow_Label_About">About</s:String>
+    <s:String x:Key="SettingWindow_Label_TooleVersion">Version:</s:String>
+    <s:String x:Key="Tip_MinButton">MinSize Window</s:String>
+    <s:String x:Key="GMessageBox_OKButton">OK</s:String>
+    <s:String x:Key="GMessageBox_CancelButton">Cancel</s:String>
+    <s:String x:Key="SettingWindow_Button_OpenDir">Open Directory</s:String>
+    <s:String x:Key="SettingWindow_Button_Validator">Validator</s:String>
+
+    <s:String x:Key="Xml_Window_title">Xml Document Editor</s:String>
+    <s:String x:Key="Xml_Window_Menu_File">File</s:String>
+    <s:String x:Key="Xml_Window_Menu_File_Open">Open</s:String>
+    <s:String x:Key="Xml_Window_Menu_File_Save">Save</s:String>
+    <s:String x:Key="Xml_Window_Menu_File_Exit">Exit</s:String>
+    <s:String x:Key="Xml_Window_Menu_Edit">Edit</s:String>
+    <s:String x:Key="Xml_Window_Menu_Edit_Add">Add</s:String>
+    <s:String x:Key="Xml_Window_Menu_Edit_Edit">Edit</s:String>
+    <s:String x:Key="Xml_Window_Menu_Edit_Delete">Delete</s:String>
+    <s:String x:Key="Xml_Window_Menu_Edit_Clear">Clear All</s:String>
+    <s:String x:Key="Xml_Window_Menu_Server">Server</s:String>
+    <s:String x:Key="Xml_Window_Menu_Server_Official">Official</s:String>
+    <s:String x:Key="Xml_Window_Menu_Server_BiliBili">BiliBili</s:String>
+
+    <s:String x:Key="Xml_Window_DataGrid_Index_Key">Key</s:String>
+    <s:String x:Key="Xml_Window_DataGrid_Index_Value">Value</s:String>
+
+
+    <s:String x:Key="Xml_Window_OpenFileDialog_title">Select your Xml File</s:String>
+    <s:String x:Key="Xml_Window_Tip_NoSelect">No item has Selected</s:String>
+    <s:String x:Key="Xml_Window_SaveFileDialog_title">Select your Xml File Save Path</s:String>
+
+    <s:String x:Key="Xml_Window_CancelDialog_title">Are you sure to exit Application? Your changes can't to be saved! </s:String>
+    <s:String x:Key="Xml_Window_ClearDialog_Context">Are you sure to clear all Configures?</s:String>
+    <s:String x:Key="Xml_Window_DeleteDialog_Context">Are you sure to delete this  Configure?</s:String>
+
+    <s:String x:Key="Xml_Window_Log_XMLintro">This is XML Document FIle,And it's recoded some configures for your game.
+        Your can use the "include" Command or rename to "GameServer.xml" and copy it to toole's directory.
+    </s:String>
+    <s:String x:Key="Xml_Window_Log_XMLintro_Official">This is Official Server Configure.</s:String>
+    <s:String x:Key="Xml_Window_Log_XMLintro_BiliBili">This is BiliBili Server Configure.</s:String>
+    <s:String x:Key="SettingWindow_Button_OpenInTernminal">Open In Ternminal</s:String>
+    <s:String x:Key="SettingWindow_DialogTitle_TerminalClose">Tip</s:String>
+    <s:String x:Key="SettingWindow_DialogContent_TerminalClose">Do you want to exit now?</s:String>
+</ResourceDictionary>

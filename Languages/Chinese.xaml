@@ -1,0 +1,80 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:System;assembly=mscorlib">
+    <s:String x:Key="MainWindow_Title">原神 区服转换助手</s:String>
+    <s:String x:Key="btn_MainWindow_LaunchGame">运行游戏</s:String>
+    <s:String x:Key="Error_NotTargetDir">这是原神的游戏目录，请把我移动到其它目录后再试。</s:String>
+    <s:String x:Key="Error_MessageBoxTitle">错误</s:String>
+    <s:String x:Key="MainWindow_SelectedItem_OfficialServer">官方服务器</s:String>
+    <s:String x:Key="MainWindow_SelectedItem_BiliBiliServer">BiliBili服务器</s:String>
+    <s:String x:Key="MainWindow_Label_GameVersion">游戏版本:</s:String>
+    <s:String x:Key="btn_MainWindow_SettingButton">设置</s:String>
+    <s:String x:Key="SettingWindow_Button_ExitWindow">关闭</s:String>
+    <s:String x:Key="SettingWindow_Button_ApplySetting">确定</s:String>
+    <s:String x:Key="SettingWindow_Label_GamePath">游戏目录:</s:String>
+    <s:String x:Key="SettingWindow_Button_Browe">浏览..</s:String>
+    <s:String x:Key="SettingWindow_Dialog_BrowseTarget">选择你的"原神"本体安装位置:</s:String>
+    <s:String x:Key="SettingWindow_Button_About">关于..</s:String>
+    <s:String x:Key="MainWindow_Label_PathError">当前设置有一些错误，请转到"设置"页面然后重试。</s:String>
+    <s:String x:Key="SettingWindow_Message_IsNotCheckedPath">这不是原神的游戏目录，请选择正确的目录后重试。</s:String>
+    <s:String x:Key="SettingWindow_Label_OtherFucation">其它功能:</s:String>
+    <s:String x:Key="SettingWindow_Button_SendToDesktop">创建快捷方式</s:String>
+    <s:String x:Key="Tip_MessageBoxTitle">提示</s:String>
+    <s:String x:Key="Tip_CreateShotOK">已创建快捷方式。</s:String>
+    <s:String x:Key="Tip_CloseButton">关闭。</s:String>
+    <s:String x:Key="Error_LaunchOlne">只能同时运行一个实例哦。</s:String>
+    <s:String x:Key="SettingWindow_Button_ClearLoginInfo">清除所有登录信息</s:String>
+    <s:String x:Key="Tip_NoKnoewConfig">注意!当前游戏的配置和程序内的不一致可能会导致游戏无法正常运行，你也可以联系作者获得新版本的更新。你确定继续吗?</s:String>
+    <s:String x:Key="Tip_ClearAllLoginInfo">是否要清空所有登录信息?清除完毕之后你需要重新输入账号信息。</s:String>
+    <s:String x:Key="Tip_ClearLoginedInfo">已清除所有登录信息。</s:String>
+    <s:String x:Key="SettingWindow_Button_RestoreBack">还原初始备份</s:String>
+    <s:String x:Key="Tip_RestoreBackage">你确定要还原已有的初始备份吗?</s:String>
+    <s:String x:Key="Error_RestoreBackage">找不到备份文件，请尝试重置备份状态。</s:String>
+    <s:String x:Key="SettingWindow_Button_ReSetBackStatues">重置备份</s:String>
+    <s:String x:Key="Tip_ReSetBackage">你确定要重置备份吗?现有的备份将会丢失!</s:String>
+    <s:String x:Key="SettingWindow_title">设置</s:String>
+    <s:String x:Key="SettingWindow_TabButton_GernelSetting">&#160;&#160;&#160;&#160;一般设置</s:String>
+    <s:String x:Key="SettingWindow_Label_About">关于</s:String>
+    <s:String x:Key="SettingWindow_Label_TooleVersion">版本:</s:String>
+    <s:String x:Key="Tip_MinButton">最小化窗口。</s:String>
+    <s:String x:Key="GMessageBox_OKButton">确定</s:String>
+    <s:String x:Key="GMessageBox_CancelButton">取消</s:String>
+    <s:String x:Key="SettingWindow_Button_OpenDir">打开游戏目录</s:String>
+    <s:String x:Key="SettingWindow_Button_Validator">文件验证器</s:String>
+
+    <s:String x:Key="Xml_Window_title">Xml 配置文档编辑器</s:String>
+    <s:String x:Key="Xml_Window_Menu_File">文件</s:String>
+    <s:String x:Key="Xml_Window_Menu_File_Open">打开</s:String>
+    <s:String x:Key="Xml_Window_Menu_File_Save">保存</s:String>
+    <s:String x:Key="Xml_Window_Menu_File_Exit">退出</s:String>
+    <s:String x:Key="Xml_Window_Menu_Edit">编辑</s:String>
+    <s:String x:Key="Xml_Window_Menu_Edit_Add">添加</s:String>
+    <s:String x:Key="Xml_Window_Menu_Edit_Edit">编辑选中项目</s:String>
+    <s:String x:Key="Xml_Window_Menu_Edit_Delete">移除选中项</s:String>
+    <s:String x:Key="Xml_Window_Menu_Edit_Clear">清空当前所有配置项</s:String>
+    <s:String x:Key="Xml_Window_Menu_Server">配置类型</s:String>
+    <s:String x:Key="Xml_Window_Menu_Server_Official">官方服务器</s:String>
+    <s:String x:Key="Xml_Window_Menu_Server_BiliBili">BiliBili服务器</s:String>
+
+    <s:String x:Key="Xml_Window_DataGrid_Index_Key">配置项</s:String>
+    <s:String x:Key="Xml_Window_DataGrid_Index_Value">值</s:String>
+
+
+    <s:String x:Key="Xml_Window_OpenFileDialog_title">选择你的 Xml 文档配置文件</s:String>
+    <s:String x:Key="Xml_Window_Tip_NoSelect">请先选中一个项目后再试</s:String>
+    <s:String x:Key="Xml_Window_SaveFileDialog_title">选择你要保存的位置</s:String>
+
+    <s:String x:Key="Xml_Window_CancelDialog_title">你确定要退出应用吗?注意:你的更改将不会得到保存。</s:String>
+    <s:String x:Key="Xml_Window_ClearDialog_Context">你确定要清空所有配置项吗?</s:String>
+    <s:String x:Key="Xml_Window_DeleteDialog_Context">你确定要删除已选中的项吗?</s:String>
+
+    <s:String x:Key="Xml_Window_Log_XMLintro">这是 XML 配置文件，该文件记录着对于游戏的相关配置。
+        你可以使用"-include"指令或者将其命名成"GameServer.xml"然后复制到工具所在目录。
+    </s:String>
+    <s:String x:Key="Xml_Window_Log_XMLintro_Official">这是官方服务器的配置信息。</s:String>
+    <s:String x:Key="Xml_Window_Log_XMLintro_BiliBili">这是BiliBili服务器的配置信息。</s:String>
+
+    <s:String x:Key="SettingWindow_Button_OpenInTernminal">在终端中打开目录</s:String>
+    <s:String x:Key="SettingWindow_DialogTitle_TerminalClose">提示</s:String>
+    <s:String x:Key="SettingWindow_DialogContent_TerminalClose">你是否想要现在退出应用?</s:String>
+</ResourceDictionary>
