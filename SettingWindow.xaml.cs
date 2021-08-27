@@ -189,8 +189,10 @@ namespace GenshinImpact_ServerConverter
                 return;
             }
             /*
-            Validator.RunInCheckPath = DataOperat.GamePath;
-            Validator.LaunchPlug(LaunchType.LaunchStart,this);
+             * 该组件尚未完成开发，因此此功能将禁用。
+             * 
+                Validator.RunInCheckPath = DataOperat.GamePath;
+                Validator.LaunchPlug(LaunchType.LaunchStart,this);
             */  
       }
 
