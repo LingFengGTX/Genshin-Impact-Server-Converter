@@ -117,7 +117,9 @@ namespace GenshinImpact_ServerConverter
             }
             this.MP4Player.Pause();
             this.Hide();
+            RunInCheck.IsWindowMinSize = true;//激活最小化以启动虚拟内存
             InSystem.LaunchGame(true,true);
+            RunInCheck.IsWindowMinSize = false;
             this.Show();
             this.MP4Player.Play();
         }

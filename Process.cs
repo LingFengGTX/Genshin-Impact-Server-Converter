@@ -42,6 +42,8 @@ namespace GenshinImpact_ServerConverter
         public static bool RestoreConsole = true;
         public static IntPtr intptr;
 
+        public static bool IsWindowMinSize = false; //程序是否处于最小化状态
+
         //数据操作类
         public static XMLConfigure xmlSetter = null;
         public static MemConfigure memSetter = null;
@@ -80,6 +82,10 @@ namespace GenshinImpact_ServerConverter
             //执行垃圾回收
             GC.Collect();
             GC.WaitForFullGCComplete();
+            //如果处于最小化状态则可以使用虚拟内存来暂存部分数据,而不是物理内存
+            if (IsWindowMinSize&&(Environment.OSVersion.Platform == PlatformID.Win32NT)) {
+                Win_API.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle,-1,-1);
+            }
         }
 
         public static void IsFirstLaunch() {
@@ -188,6 +194,9 @@ namespace GenshinImpact_ServerConverter
 
     /// 在程序中注册系统的API
     public class Win_API {
+        [DllImport("kernel32.dll")]
+        public static extern bool SetProcessWorkingSetSize(IntPtr process,int minSize,int maxSize);
+
         [DllImport("kernel32.dll")]
         public static extern void WinExec(string AppString, int RunType);
 
@@ -414,7 +423,7 @@ namespace GenshinImpact_ServerConverter
 
             while (!GameProcess.HasExited)
             {
-                System.Threading.Thread.Sleep(1000);//设置延迟，避免后台占用CPU过大
+                System.Threading.Thread.Sleep(1000);//设置延迟设置为1秒，避免后台占用CPU过大
                 System.Windows.Forms.Application.DoEvents();
             }
         }

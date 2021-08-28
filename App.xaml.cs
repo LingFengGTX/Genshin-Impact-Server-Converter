@@ -372,7 +372,7 @@ namespace GenshinImpact_ServerConverter
             }
             //启动窗口 
 
-            //如果用户输入了-language参数，那么自动会初始化用户语言
+            //如果用户没有输入-language参数，那么自动会初始化用户语言
             if (RunInCheck.lang == null) {
                 RunInCheck.SetInterfaceLanguage();//初始化语言
             }
@@ -416,6 +416,11 @@ namespace GenshinImpact_ServerConverter
             //如果运行时没有运行 -LoadConfigure命令则再次尝试加载本地配置
             if (!RunInCheck.IsCheckedPath) {
                 RunInCheck.LoadLocateConfigure();
+            }
+
+            //如果用户没有使用-gc命令则自动创建一个gc定时回收器 默认 15分钟(900秒)执行一次垃圾回收
+            if (RunInCheck.GcCollecter==null) {
+                RunInCheck.LaunchGcCollecter(900);
             }
 
             //创建主窗口类
