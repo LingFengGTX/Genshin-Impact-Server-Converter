@@ -9,6 +9,7 @@
     <s:String x:Key="MainWindow_Label_GameVersion">Game Version:</s:String>
     <s:String x:Key="MainWindow_SelectedItem_OfficialServer">Official Server</s:String>
     <s:String x:Key="MainWindow_SelectedItem_BiliBiliServer">BiliBili Server</s:String>
+    <s:String x:Key="MainWindow_SelectedItem_InternationalServer">International Server</s:String>
     <s:String x:Key="SettingWindow_Button_ExitWindow">Exit</s:String>
     <s:String x:Key="SettingWindow_Button_ApplySetting">Apply</s:String>
     <s:String x:Key="SettingWindow_Label_GamePath">Game Path:</s:String>
@@ -55,6 +56,7 @@
     <s:String x:Key="Xml_Window_Menu_Server">Server</s:String>
     <s:String x:Key="Xml_Window_Menu_Server_Official">Official</s:String>
     <s:String x:Key="Xml_Window_Menu_Server_BiliBili">BiliBili</s:String>
+    <s:String x:Key="Xml_Window_Menu_Server_International">International</s:String>
 
     <s:String x:Key="Xml_Window_DataGrid_Index_Key">Key</s:String>
     <s:String x:Key="Xml_Window_DataGrid_Index_Value">Value</s:String>
@@ -73,6 +75,7 @@
     </s:String>
     <s:String x:Key="Xml_Window_Log_XMLintro_Official">This is Official Server Configure.</s:String>
     <s:String x:Key="Xml_Window_Log_XMLintro_BiliBili">This is BiliBili Server Configure.</s:String>
+    <s:String x:Key="Xml_Window_Log_XMLintro_International">This is International Server Configure.</s:String>
     <s:String x:Key="SettingWindow_Button_OpenInTernminal">Open In Ternminal</s:String>
     <s:String x:Key="SettingWindow_DialogTitle_TerminalClose">Tip</s:String>
     <s:String x:Key="SettingWindow_DialogContent_TerminalClose">Do you want to exit now?</s:String>

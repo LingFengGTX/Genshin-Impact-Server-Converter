@@ -45,6 +45,10 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -80,26 +84,6 @@
     <Compile Include="SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="XML\EditWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="XML\EditWindow.Designer.cs">
-      <DependentUpon>EditWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="XML\AddNewItemWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="XML\AddNewItemWindow.Designer.cs">
-      <DependentUpon>AddNewItemWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="XML\XMLConfigure.cs" />
-    <Compile Include="XML\XmlDocumentEditor.xaml.cs">
-      <DependentUpon>XmlDocumentEditor.xaml</DependentUpon>
-    </Compile>
-    <Page Include="XML\XmlDocumentEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Resource Include="Images\Interface.jpg" />
     <Resource Include="Languages\Chinese.xaml">
       <SubType>Designer</SubType>
@@ -156,21 +140,14 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="XML\EditWindow.resx">
-      <DependentUpon>EditWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="XML\AddNewItemWindow.resx">
-      <DependentUpon>AddNewItemWindow.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="App.config" />
+    <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Icos\BiliBili_Logo.jpg" />
-    <Resource Include="Images\Icos\Genshin_impact.jpg" />
     <Resource Include="Images\Icos\NoConfig.jpg" />
   </ItemGroup>
   <ItemGroup>
@@ -197,6 +174,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Interface.mp4" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ScriptEngine\ScriptEngine.csproj">
+      <Project>{948e8f83-826a-469b-9da3-bda7cc2eeced}</Project>
+      <Name>ScriptEngine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

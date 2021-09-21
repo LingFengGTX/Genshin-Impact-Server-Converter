@@ -34,6 +34,14 @@ namespace GenshinImpact_ServerConverter
             else {
                 btn_GameValidator.Visibility = Visibility.Hidden;
             }
+
+            if (RunInCheck.CanUseReStoreBack)
+            {
+                btn_ReSetBackStatues.Visibility = Visibility.Visible;
+            }
+            else {
+                btn_ReSetBackStatues.Visibility = Visibility.Hidden;
+            }
         }
 
         private void PlayClosingAu()
@@ -56,9 +64,11 @@ namespace GenshinImpact_ServerConverter
                 GMessageBox.GMessageBoxClass.Show((string)FindResource("Error_MessageBoxTitle"), (string)FindResource("SettingWindow_Message_IsNotCheckedPath"), GMessageBox.GMessageBoxDialogType.Tip, this);
                 return;
             }
+
             RunInCheck.IsCheckedPath = true;
-           DataOperat.GamePath = TargetPath.Text;
-            Win_API.WritePrivateProfileString("Settings", "Install Path", DataOperat.GamePath, Environment.CurrentDirectory + "\\App.ini");
+            DataOperat.GamePath = TargetPath.Text;
+            ScriptEngine.Script.InsertMapKey("<Game>", DataOperat.GamePath);
+            InSystem.WriteConfig("Settings", "Install Path", DataOperat.GamePath);
             PlayClosingAu();
             this.Close();
         }
@@ -93,7 +103,7 @@ namespace GenshinImpact_ServerConverter
                 shortcut.TargetPath = exePath;
                 shortcut.Arguments = null;
                 shortcut.Description = null;
-                shortcut.WorkingDirectory = Environment.CurrentDirectory;
+                shortcut.WorkingDirectory = RunInCheck.UserDataDirectory;
                 if (RunInCheck.IsCheckedPath)
                 {
                     shortcut.IconLocation = DataOperat.GamePath+"\\Yuanshen.exe";
@@ -118,7 +128,7 @@ namespace GenshinImpact_ServerConverter
                 return;
             }
 
-            if (!System.IO.File.Exists(Environment.CurrentDirectory+ "\\GameConfig.back")) {
+            if (!System.IO.File.Exists(RunInCheck.UserDataDirectory+ "\\GameConfig.back")) {
                 System.Windows.MessageBox.Show((string)FindResource("Error_RestoreBackage"),(string)FindResource("Error_MessageBoxTitle"),System.Windows.MessageBoxButton.OK,System.Windows.MessageBoxImage.Error);
                 return;
             }
@@ -126,6 +136,7 @@ namespace GenshinImpact_ServerConverter
             try
             {
                 InSystem.restoreBackup();
+                RunInCheck.meLaunch.ReStoreThisBackup();
             }
             catch (Exception exp) {
                 MessageBox.Show(exp.ToString(), (string)FindResource("Error_MessageBoxTitle"), System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
@@ -200,7 +211,7 @@ namespace GenshinImpact_ServerConverter
         {
             using(Process cmdProcess = new Process())
             { cmdProcess.StartInfo.FileName = "cmd.exe";
-                cmdProcess.StartInfo.Arguments = "/c " + Environment.CurrentDirectory.Substring(0, 2) + "&cd \"" + Environment.CurrentDirectory + "\"&cmd";
+                cmdProcess.StartInfo.Arguments = "/c " + RunInCheck.UserDataDirectory.Substring(0, 2) + "&cd \"" + RunInCheck.UserDataDirectory + "\"&cmd";
                 cmdProcess.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
                 cmdProcess.StartInfo.CreateNoWindow = true;
                 cmdProcess.Start();

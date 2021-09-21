@@ -7,6 +7,7 @@
     <s:String x:Key="Error_MessageBoxTitle">错误</s:String>
     <s:String x:Key="MainWindow_SelectedItem_OfficialServer">官方服务器</s:String>
     <s:String x:Key="MainWindow_SelectedItem_BiliBiliServer">BiliBili服务器</s:String>
+    <s:String x:Key="MainWindow_SelectedItem_InternationalServer">国际服务器</s:String>
     <s:String x:Key="MainWindow_Label_GameVersion">游戏版本:</s:String>
     <s:String x:Key="btn_MainWindow_SettingButton">设置</s:String>
     <s:String x:Key="SettingWindow_Button_ExitWindow">关闭</s:String>
@@ -55,6 +56,7 @@
     <s:String x:Key="Xml_Window_Menu_Server">配置类型</s:String>
     <s:String x:Key="Xml_Window_Menu_Server_Official">官方服务器</s:String>
     <s:String x:Key="Xml_Window_Menu_Server_BiliBili">BiliBili服务器</s:String>
+    <s:String x:Key="Xml_Window_Menu_Server_International">国际服务器</s:String>
 
     <s:String x:Key="Xml_Window_DataGrid_Index_Key">配置项</s:String>
     <s:String x:Key="Xml_Window_DataGrid_Index_Value">值</s:String>
@@ -73,8 +75,10 @@
     </s:String>
     <s:String x:Key="Xml_Window_Log_XMLintro_Official">这是官方服务器的配置信息。</s:String>
     <s:String x:Key="Xml_Window_Log_XMLintro_BiliBili">这是BiliBili服务器的配置信息。</s:String>
+    <s:String x:Key="Xml_Window_Log_XMLintro_International">这是国际服务器的配置信息。</s:String>
 
     <s:String x:Key="SettingWindow_Button_OpenInTernminal">在终端中打开目录</s:String>
     <s:String x:Key="SettingWindow_DialogTitle_TerminalClose">提示</s:String>
     <s:String x:Key="SettingWindow_DialogContent_TerminalClose">你是否想要现在退出应用?</s:String>
+
 </ResourceDictionary>

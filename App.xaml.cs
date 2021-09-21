@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows;
-
+using ScriptEngine;
 namespace GenshinImpact_ServerConverter
 {
     /// <summary>
@@ -14,6 +14,16 @@ namespace GenshinImpact_ServerConverter
     public partial class App : Application
     {
         public void LaunchFuncation(object sender,StartupEventArgs args) {
+
+            //尝试初始化脚本类
+            try
+            {
+                InitializeScriptClass();
+            }
+            catch (Exception exp) {
+                System.Console.WriteLine("Error:{0}",exp.Message);
+                InSystem.AppExit(-1);
+            }
 
 
             //程序启动方法，此方法中，操作系统会将参数传递到本方法中然后根据参数来影响程序的启动行为。
@@ -56,16 +66,16 @@ namespace GenshinImpact_ServerConverter
                     {
                         string Path = MoveCommand(Loop, 2, args.Args);
                         if (DataOperat.RequirePath(Path)) {
-                            Win_API.WritePrivateProfileString("Settings", "Install Path", Path, Environment.CurrentDirectory + "\\App.ini");
+                            InSystem.WriteConfig("Settings", "Install Path", Path);
                         }
                     } else if (SetType=="first") {
                         string reset = MoveCommand(Loop, 2, args.Args);
                         if (reset == "yes")
                         {
-                            Win_API.WritePrivateProfileString("Settings", "IsFirstLaunch", "0", Environment.CurrentDirectory + "\\App.ini");
+                            InSystem.WriteConfig("Settings", "IsFirstLaunch", "0");
                         }
                         else if (reset == "no") {
-                            Win_API.WritePrivateProfileString("Settings", "IsFirstLaunch", "1", Environment.CurrentDirectory + "\\App.ini");
+                            InSystem.WriteConfig("Settings", "IsFirstLaunch", "1");
                         }
                     }
 
@@ -83,7 +93,7 @@ namespace GenshinImpact_ServerConverter
 
                     if (MoveCommand(Loop, 1, args.Args) == "this") {
                         System.Console.WriteLine("open target:" + Environment.CurrentDirectory);
-                        Win_API.WinExec("explorer.exe \""+Environment.CurrentDirectory+"\"",1);
+                        Win_API.WinExec("explorer.exe \""+ Environment.CurrentDirectory + "\"",1);
                     } else if (MoveCommand(Loop, 1, args.Args) == "game") {
                         if (RunInCheck.IsCheckedPath)
                         {
@@ -106,14 +116,13 @@ namespace GenshinImpact_ServerConverter
                      * 此命令是载入本地配置文件，方便执行有关备份的操作
                      */
                     RunInCheck.LoadLocateConfigure();
-                    if (!RunInCheck.IsCheckedPath)
+                    try
                     {
-                        System.Console.WriteLine("Load Configure Faild!");
-
+                        InSystem.CheckedPath();
                     }
-                    else
-                    {
-                        System.Console.WriteLine("Load Configure Sucessful!");
+                    catch (Exception exp) {
+
+                        System.Console.WriteLine(exp.Message);
                     }
 
                     continue;
@@ -126,12 +135,17 @@ namespace GenshinImpact_ServerConverter
                      * 
                      * 该指令应提前使用 -LoadConfigure
                      */
+                    int GameIndex = RunInCheck.meLaunch.GetServerType();
+                    if (GameIndex == -1) {
+                        System.Console.WriteLine("Error:Failed to load settings.");
+                        continue;
+                    }
                     if (MoveCommand(Loop, 1, args.Args) == "wait")
                     {
-                        InSystem.LaunchGame(true,false);
+                        InSystem.LaunchGame(GameIndex, true,false);
                     }
                     else {
-                        InSystem.LaunchGame(false,false);
+                        InSystem.LaunchGame(GameIndex, false,false);
                     }
                     continue;
                 }
@@ -203,6 +217,15 @@ namespace GenshinImpact_ServerConverter
                     
                 }
 
+                if (Command == "-showServerList") {
+                    System.Console.WriteLine("Servers:\tName");
+                    System.Console.WriteLine("---------------------------");
+                    foreach (System.Xml.XmlNode tempNode in RunInCheck.meLaunch.ServerNodes) {
+                        System.Console.WriteLine("{0}\t{1}",tempNode.Attributes["Name"].Value,tempNode.Attributes["Text"].Value);
+                    }
+                    System.Console.WriteLine("---------------------------");
+                }
+
                 if (Command == "-gc") {
                     /*
                      * 启动Gc垃圾回收器，该命令是让程序周期性执行垃圾回收以节省内存的使用
@@ -223,13 +246,13 @@ namespace GenshinImpact_ServerConverter
                         RunInCheck.LaunchGcCollecter(time);
                     }//如果超出这个范围则不执行垃圾回收
                     else {
-                        System.Console.WriteLine("Interval Error.");
+                        System.Console.WriteLine("The cycle setting is wrong.");
                     }
                     continue;
                 }
 
                 if (Command == "-enableAssembly") {
-                    //启动游戏内组件
+                    //启动实验性组件功能
                     if (MoveCommand(Loop, 1, args.Args) == "true")
                     {
                         System.Console.WriteLine("Experiment function has been started.");
@@ -269,94 +292,21 @@ namespace GenshinImpact_ServerConverter
                     continue;
                 }
 
-                if (Command == "-disableXML") {
-                    //禁用XML的游戏配置
+                if (Command == "-server") {
 
-                    /*
-                     * 一般情况下如果未使用该命令，以及程序在运行目录下检测到 GameServer.xml 文件则会自动应用该配置文件
-                     * 
-                     * 如果该配置文件存在问题则程序会强制退出，该情况下移除该文件或者启用此命令即可
-                     * 
-                     * 关于配置文件的编辑可以使用 -enableEditorWindow 命令，启用XML文档编辑模式
-                     */
-                    if (MoveCommand(Loop, 1, args.Args) == "true")
-                    {
-                        System.Console.WriteLine("XML File disabled.");
-                        RunInCheck.EnableXMLConfigure = false;
-                    }
-                    continue;
-                }
 
-                if (Command == "-enableEditorWindow") {
-                    //启动配置文件编辑器
-                    XmlDocumentEditor xmlDocumentEditor;
-                    if (System.IO.File.Exists(MoveCommand(Loop, 1, args.Args)))
-                    {
-                        xmlDocumentEditor = new XmlDocumentEditor(MoveCommand(Loop, 1, args.Args));
-                    }
-                    else {
-                        xmlDocumentEditor = new XmlDocumentEditor(null);
+                    if (!RunInCheck.IsCheckedPath) {
+                        System.Console.WriteLine("Cann't know locate configure!");
+                        continue;
                     }
                     
-                    xmlDocumentEditor.ShowActivated = true;
-                    xmlDocumentEditor.ShowDialog();
-                }
-
-                if (Command =="-include") { 
-                    /*
-                     * 引用指定的XML文档配置文件
-                     * 
-                     * 如果之前使用了-disableXML则此参数不会生效
-                     */
-                    string tempPath= MoveCommand(Loop, 1, args.Args);
-                    if (System.IO.File.Exists(tempPath) == true)
+                    //服务器切换操作
+                    if (RunInCheck.meLaunch.IfIndexIsTrue(MoveCommand(Loop, 1, args.Args)) != -1)
                     {
-                        System.Console.WriteLine("Included the target:"+tempPath);
-                        RunInCheck.includeXML = tempPath;
-                    }
-                    continue;
-                }
-
-                if (Command == "-server") {
-                    if (!RunInCheck.IsCheckedPath) {
-                        System.Console.WriteLine("No configure useful,please use \"-loadConfigure\" command.");
-                        continue;
-                    }
-                    int Target = InSystem.StringIndex(MoveCommand(Loop, 2, args.Args));
-                    if (Target == -1) {
-                        System.Console.WriteLine("Noknow Server type.");
-                        continue;
-                    }
-                    string type = MoveCommand(Loop, 1, args.Args);
-                    string XmlFile= MoveCommand(Loop, 3, args.Args);
-                    if (type=="mem") {
-                        RunInCheck.memSetter = new MemConfigure();
-                        RunInCheck.memSetter.LoadDefaultConfigure(null);
-                        RunInCheck.memSetter.ApplyTargetServer(Target);
-                        System.Console.WriteLine("Sucessful to change target server.");
-                    } else if (type=="xml") {
-                        RunInCheck.xmlSetter = new XMLConfigure();
-                        if (System.IO.File.Exists(XmlFile))
-                        {
-                            RunInCheck.xmlSetter.LoadDefaultConfigure(XmlFile);
-                            System.Diagnostics.Debug.WriteLine("Successful to load:" +XmlFile);
-                            System.Console.WriteLine("Sucessful to change target server.");
-                        }
-                        else {
-                            if (System.IO.File.Exists(Environment.CurrentDirectory + "\\GameServer.xml"))
-                            {
-                                RunInCheck.xmlSetter.LoadDefaultConfigure(Environment.CurrentDirectory + "\\GameServer.xml");
-                                RunInCheck.xmlSetter.ApplyTargetServer(Target);
-                                System.Diagnostics.Debug.WriteLine("Successful to load:" + Environment.CurrentDirectory + "\\GameServer.xml");
-                                System.Console.WriteLine("Sucessful to change target server.");
-                            }
-                            else {
-                                System.Diagnostics.Debug.WriteLine("Fail to change.");
-                            }
-                        }
+                        RunInCheck.meLaunch.ApplyTargetServer(RunInCheck.meLaunch.IfIndexIsTrue(MoveCommand(Loop, 1, args.Args)));
                     }
                     else {
-                        continue;
+                        System.Console.WriteLine("The target server not true!");
                     }
                     continue;
                 }
@@ -371,58 +321,28 @@ namespace GenshinImpact_ServerConverter
                 }
             }
             //启动窗口 
+            
 
             //如果用户没有输入-language参数，那么自动会初始化用户语言
             if (RunInCheck.lang == null) {
                 RunInCheck.SetInterfaceLanguage();//初始化语言
             }
 
-            //检测 GameServer.XML文件
-            if (RunInCheck.EnableXMLConfigure != false) {
-                if (RunInCheck.includeXML == null) {
-                    if (!System.IO.File.Exists(Environment.CurrentDirectory + "\\GameServer.xml"))
-                    {
-                        RunInCheck.EnableXMLConfigure = false;
-                    }
-                }
-            }
-            
-            //载入预设
-            if (RunInCheck.EnableXMLConfigure)
-            {
-                if (RunInCheck.xmlSetter == null) { 
-                    RunInCheck.xmlSetter = new XMLConfigure();//初始化自定义类
-                }
-                if (RunInCheck.includeXML != null)
-                {
-                    if (RunInCheck.xmlSetter == null)
-                    {
-                        RunInCheck.xmlSetter.LoadDefaultConfigure(RunInCheck.includeXML);//载入目标配置
-                    }
-                }
-                else {
-                        RunInCheck.xmlSetter.LoadDefaultConfigure(Environment.CurrentDirectory + "\\GameServer.xml");
-                }
-            }
-            else {
-                if (RunInCheck.memSetter == null)
-                {
 
-                    RunInCheck.memSetter = new MemConfigure();//初始化预设类
-                }
-                RunInCheck.memSetter.LoadDefaultConfigure(null);
-            }
+            //载入预设
 
             //如果运行时没有运行 -LoadConfigure命令则再次尝试加载本地配置
             if (!RunInCheck.IsCheckedPath) {
                 RunInCheck.LoadLocateConfigure();
             }
-
+            
             //如果用户没有使用-gc命令则自动创建一个gc定时回收器 默认 15分钟(900秒)执行一次垃圾回收
             if (RunInCheck.GcCollecter==null) {
                 RunInCheck.LaunchGcCollecter(900);
             }
 
+            //是否启用恢复功能
+            RunInCheck.CanUseReStoreBack = RunInCheck.meLaunch.CanUseBackUpFuncation();
             //创建主窗口类
             MainWindow mainWindow = new MainWindow();
             RunInCheck.LaunchApplication(mainWindow);
@@ -430,6 +350,34 @@ namespace GenshinImpact_ServerConverter
             mainWindow.Show();
             
         }
+
+        public static void InitializeScriptClass() {
+            RunInCheck.meLaunch = new ScriptOpreate();
+            if (RunInCheck.meLaunch == null) {
+                throw new Exception("Important classes are not initialized.");
+            }
+            if (!System.IO.Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\GenshinImpact_ServerConverter")) {
+                try
+                {
+                    System.IO.Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\GenshinImpact_ServerConverter");
+                }
+                catch (Exception exp) {
+                    System.Console.WriteLine("Error:{0}",exp.Message) ;
+                    InSystem.AppExit(-1);
+                }
+            }
+            RunInCheck.UserDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+"\\GenshinImpact_ServerConverter";
+            
+            try
+            {
+                RunInCheck.meLaunch.LoadDefaultConfigure(Environment.CurrentDirectory+"\\"+ System.Diagnostics.Process.GetCurrentProcess().ProcessName + ".xml");
+            }
+            catch (Exception exp) {
+                throw exp;
+            }
+        
+        }
+
         /// <summary>
         /// 获取指定命令后的命令数
         /// </summary>

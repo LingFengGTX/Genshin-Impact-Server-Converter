@@ -27,8 +27,6 @@
                 </Border>
             </Grid>
             <ComboBox Margin="281,275,281,112" Name="ServerSelectBox" Style="{StaticResource ServerSelectBoxStyle}" Background="White" SelectionChanged="ServerSelectBox_SelectionChanged" Height="28">
-                <ComboBoxItem Content="{StaticResource MainWindow_SelectedItem_OfficialServer}"/>
-                <ComboBoxItem Content="{StaticResource MainWindow_SelectedItem_BiliBiliServer}"/>
             </ComboBox>
             <Label x:Name="Error_TipBox" Margin="0,387,0,0" Foreground="Red" FontWeight="Bold" Content="{StaticResource MainWindow_Label_PathError}" HorizontalContentAlignment="Center"/>
             <Button Margin="360,230,361,161" Name="btn_SettingButton" Style="{StaticResource LaunchButtonStyle}" Content="{StaticResource btn_MainWindow_SettingButton}" Click="btn_SettingButton_Click"/>

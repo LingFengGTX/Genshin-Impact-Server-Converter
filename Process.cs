@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.Reflection;
 using System.Diagnostics;
-using System.Threading;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Xml;
 namespace GenshinImpact_ServerConverter
 {
 
@@ -14,7 +11,6 @@ namespace GenshinImpact_ServerConverter
     /// </summary>
     class RunInCheck
     {
-        private const int ImageCount = 5;//图像数量限制阀门
         private static System.Threading.Mutex instance = null; //程序线程检查
         public static bool IsCheckedPath = false;
         public static bool NoknowConfig = false;
@@ -25,12 +21,7 @@ namespace GenshinImpact_ServerConverter
 
         //设置应用背景
         public static bool ChangeTheBackGround = false;
-        public static string ImagePath = null;
-
-        public static bool EnableXMLConfigure = true; //默认开启
-        
-        //引用文件路径
-        public static string includeXML = null;
+        public static string ImagePath = null;    
 
         public static string lang = null;
 
@@ -44,18 +35,29 @@ namespace GenshinImpact_ServerConverter
 
         public static bool IsWindowMinSize = false; //程序是否处于最小化状态
 
-        //数据操作类
-        public static XMLConfigure xmlSetter = null;
-        public static MemConfigure memSetter = null;
+        public static string UserDataDirectory = null;
+        public static bool CanUseReStoreBack = false;
+
+        public static ScriptOpreate meLaunch = null;
 
         public static bool IsGenShinDir() {
-            string LaunchDirectory = Environment.CurrentDirectory;
-            if (!System.IO.File.Exists(LaunchDirectory + "\\YuanShen.exe") || !System.IO.File.Exists(LaunchDirectory + "\\config.ini"))
+            string LaunchDirectory = RunInCheck.UserDataDirectory;
+            if (System.IO.File.Exists(LaunchDirectory + "\\YuanShen.exe"))
             {
                 return false;
             }
-            else {
-                return true;
+            else if (System.IO.File.Exists(LaunchDirectory + "\\GenshinImpact.exe")){
+                return false;
+            }
+            else
+            {
+                if (System.IO.File.Exists(LaunchDirectory + "\\config.ini")){
+                    return true;
+                }
+                else {
+                    return false;
+                }
+                
             }
         }
 
@@ -69,12 +71,13 @@ namespace GenshinImpact_ServerConverter
 
         public static void LoadLocateConfigure() {
             //获取本地配置信息
-            StringBuilder tempPathStringBulider = new StringBuilder();
-            Win_API.GetPrivateProfileString("Settings", "Install Path", "null", tempPathStringBulider, 255, Environment.CurrentDirectory + "\\App.ini");
-            DataOperat.GamePath = tempPathStringBulider.ToString();
+            DataOperat.GamePath = InSystem.ReadConfig("Settings", "Install Path");
 
             //检查配置是否正确
             RunInCheck.IsCheckedPath = DataOperat.RequirePath(DataOperat.GamePath);
+            if (RunInCheck.IsCheckedPath) {
+                ScriptEngine.Script.InsertMapKey("<Game>", DataOperat.GamePath); ScriptEngine.Script.InsertMapKey("<Data>", Environment.CurrentDirectory + "\\Data");
+            }
         }
 
         private static void GcCollecter_Tick(object sender, EventArgs e)
@@ -89,17 +92,15 @@ namespace GenshinImpact_ServerConverter
         }
 
         public static void IsFirstLaunch() {
-            StringBuilder RString = new StringBuilder();
-            Win_API.GetPrivateProfileString("Settings","IsFirstLaunch","1",RString,255,Environment.CurrentDirectory+"\\App.ini");
-            if (RString.ToString() == "1") {
+            if (InSystem.ReadConfig("Settings", "IsFirstLaunch") != "0") {
                 
                 try{
-                    System.IO.File.Copy(DataOperat.GamePath+"\\config.ini",Environment.CurrentDirectory+"\\GameConfig.back");
+                    System.IO.File.Copy(DataOperat.GamePath+"\\config.ini",RunInCheck.UserDataDirectory+"\\GameConfig.back");
                 }
                 catch{ 
                    
                 }
-                Win_API.WritePrivateProfileString("Settings", "IsFirstLaunch", "0",Environment.CurrentDirectory + "\\App.ini");
+                InSystem.WriteConfig("Settings", "IsFirstLaunch", "0");
             }
         
         }
@@ -161,11 +162,7 @@ namespace GenshinImpact_ServerConverter
             }
             else {
                 //视频背景资源释放
-                RunInCheck.VideoFile = System.IO.Path.GetTempPath() + "\\GenShenImpact_ServerConvert\\Background.mp4";
-                if (!System.IO.Directory.Exists(System.IO.Path.GetTempPath() + "\\GenShenImpact_ServerConvert")) {
-                    System.IO.Directory.CreateDirectory(System.IO.Path.GetTempPath() + "\\GenShenImpact_ServerConvert");
-
-                }
+                RunInCheck.VideoFile = RunInCheck.UserDataDirectory + "\\Background.mp4";
                 if (!System.IO.File.Exists(RunInCheck.VideoFile))
                 {
                     InSystem.CopyTempFile();
@@ -182,38 +179,45 @@ namespace GenshinImpact_ServerConverter
             RunInCheck.IfOtherRun(Target);
             if (RunInCheck.IsGenShinDir())
             {
-                GMessageBox.GMessageBoxClass.Show((string)Target.FindResource("Error_MessageBoxTitle"), (string)Target.FindResource("Error_NotTargetDir"), GMessageBox.GMessageBoxDialogType.Tip, Target);
+                System.Windows.MessageBox.Show((string)Target.FindResource("Error_NotTargetDir"),(string)Target.FindResource("Error_MessageBoxTitle"), System.Windows.MessageBoxButton.OK,System.Windows.MessageBoxImage.Error);
                 InSystem.AppExit(-1);
             }
 
-            //开启WinForm界面美化
-            System.Windows.Forms.Application.EnableVisualStyles();
         }
 
     }
 
     /// 在程序中注册系统的API
     public class Win_API {
+        //转移至虚拟内存
         [DllImport("kernel32.dll")]
         public static extern bool SetProcessWorkingSetSize(IntPtr process,int minSize,int maxSize);
 
+        //执行函数
         [DllImport("kernel32.dll")]
         public static extern void WinExec(string AppString, int RunType);
 
+        //获取操作系统语言代码
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         public static extern uint GetOEMCP();
 
+        //获取文本类型的INI配置参数
         [DllImport("kernel32.dll")]
         public static extern uint GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, uint nSize, string lpFileName);
 
+        //写入INI配置参数
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool WritePrivateProfileString(string lpAppName, string lpKeyName, string lpString, string lpFileName);
 
+        //设置窗体显示状态
         [DllImport("user32.dll", EntryPoint = "ShowWindow", SetLastError = true)]
         public static extern bool ShowWindow(IntPtr hWnd, uint nCmdShow);
-      [DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true)]
+
+        //查找指定标题窗口句柄
+        [DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true)]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
+        //计时器
         [System.Runtime.InteropServices.DllImport("kernel32.dll")]
         public static extern uint GetTickCount();
 
@@ -235,106 +239,146 @@ namespace GenshinImpact_ServerConverter
             {
                 return false;
             }
-            else if (!System.IO.File.Exists(Path + "\\YuanShen.exe") || !System.IO.File.Exists(Path + "\\config.ini"))
-            {
-                return false;
-            }
-            else
+            else if (System.IO.File.Exists(Path + "\\YuanShen.exe") && System.IO.File.Exists(Path + "\\config.ini"))
             {
                 return true;
             }
-        }
-
-    }
-    public class MemConfigure : IDataOpreat
-    {
-        //预设配置数据
-        private ConfigureData BiliBili_Configure;
-        private ConfigureData Official_Configure;
-
-        public void LoadDefaultConfigure(string Target)
-        {
-            BiliBili_Configure = new ConfigureData { sub_channel = "0", channel = "14", cps = "bilibili" };
-            Official_Configure = new ConfigureData { sub_channel = "1", channel = "1", cps = "pcadbdpz" };
-        }
-
-        //将获取的配置数据与标准数据对比，判断游戏当前使用的是何种服务器
-        public int GetServerType()
-        {
-            ConfigureData tempData = ReadInLocation();
-            if (CompareStruct(tempData, Official_Configure))
+            else if (System.IO.File.Exists(Path + "\\GenshinImpact.exe") && System.IO.File.Exists(Path + "\\config.ini"))
             {
-                return 0;
-            }
-            else if (CompareStruct(tempData, BiliBili_Configure))
-            {
-                return 1;
+                return true;
             }
             else
             {
-                return -1;
-            }
-
-        }
-
-        public struct ConfigureData
-        {
-            public string channel;
-            public string sub_channel;
-            public string cps;
-
-        }
-
-        private bool CompareStruct(ConfigureData a, ConfigureData b)
-        {
-            if (a.channel != b.channel)
-            {
                 return false;
-            }
-
-            if (a.sub_channel != b.sub_channel)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        private ConfigureData ReadInLocation()
-        {
-            ConfigureData tempData = new ConfigureData { };
-            StringBuilder GetString = new StringBuilder();
-            Win_API.GetPrivateProfileString("General", "sub_channel", "NULL", GetString, 255, DataOperat.GamePath + "\\Config.ini");
-            tempData.sub_channel = GetString.ToString();
-
-            Win_API.GetPrivateProfileString("General", "channel", "NULL", GetString, 255, DataOperat.GamePath + "\\Config.ini");
-            tempData.channel = GetString.ToString();
-
-            Win_API.GetPrivateProfileString("General", "cps", "NULL", GetString, 255, DataOperat.GamePath + "\\Config.ini");
-            tempData.cps = GetString.ToString();
-            return tempData;
-        }
-
-        //应用配置数据
-        public void ApplyTargetServer(int Target)
-        {
-            switch (Target)
-            {
-                case 0:
-                    {
-                        Win_API.WritePrivateProfileString("General", "sub_channel", Official_Configure.sub_channel, DataOperat.GamePath + "\\Config.ini");
-                        Win_API.WritePrivateProfileString("General", "cps", Official_Configure.cps, DataOperat.GamePath + "\\Config.ini");
-                        Win_API.WritePrivateProfileString("General", "channel", Official_Configure.channel, DataOperat.GamePath + "\\Config.ini");
-                    }; break;
-                case 1:
-                    {
-                        Win_API.WritePrivateProfileString("General", "sub_channel", BiliBili_Configure.sub_channel, DataOperat.GamePath + "\\Config.ini");
-                        Win_API.WritePrivateProfileString("General", "cps", BiliBili_Configure.cps, DataOperat.GamePath + "\\Config.ini");
-                        Win_API.WritePrivateProfileString("General", "channel", BiliBili_Configure.channel, DataOperat.GamePath + "\\Config.ini");
-                    }; break;
             }
         }
 
     }
+
+
+    public class ScriptOpreate : IDataOpreat
+    {
+        public  XmlDocument ExpenedData = null;
+        public  XmlNodeList ServerNodes = null;
+
+        public int IfIndexIsTrue(string Title) {
+            int Loop = -1;
+            foreach (XmlNode tempNode in  ServerNodes) {
+                Loop += 1;
+                if (tempNode.Attributes["Name"].Value == Title) {
+                    return Loop;
+                }
+            }
+            return -1;
+        }
+
+        public void ReStoreThisBackup() {
+            ScriptEngine.Script.LaunchScriptFromFile(ExpenedData.SelectSingleNode("Converter").SelectSingleNode("Head").SelectSingleNode("Script").Attributes["ReBackup"].Value, this.GetScriptFileName());
+        }
+
+        public void LoadDefaultConfigure(string Path) {
+            if (!System.IO.File.Exists(Path)) {
+                throw new Exception("The configure XML file can't to be loaded.");
+            }
+            this.ExpenedData = new XmlDocument();
+            XmlReaderSettings ReadingRules = new XmlReaderSettings();
+            ReadingRules.IgnoreComments = true;
+            try {
+                this.ExpenedData.Load(XmlReader.Create(Path, ReadingRules)) ;
+            }
+            catch (Exception exp) {
+                throw exp;
+            }
+            this.ServerNodes = this.ExpenedData.SelectSingleNode("Converter").SelectSingleNode("Server").ChildNodes;
+        }
+
+        public bool CanUseBackUpFuncation() {
+            if (this.ExpenedData.SelectSingleNode("Converter").SelectSingleNode("Head").SelectSingleNode("Script").Attributes["EnbaleRestore"].Value== "1")
+            {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        public string GetScriptFileName() {
+            try {
+                return ExpenedData.SelectSingleNode("Converter").SelectSingleNode("Head").SelectSingleNode("Script").Attributes["Using"].Value;
+            }
+            catch (Exception exp) {
+                throw exp;
+            }
+        }
+
+        public void RefreshServerList(System.Windows.Controls.ComboBox Target) {
+            foreach (XmlNode tempNode in this.ServerNodes)
+            {
+                try
+                {
+                    Target.Items.Add(new System.Windows.Controls.ComboBoxItem().Content = tempNode.Attributes["Text"].Value);
+                }
+                catch {
+                    continue;
+                }
+            }
+        }
+
+        public string GetServerNameFromIndex(int Index) {
+            if (Index < 0 && Index > (this.ServerNodes.Count - 1))
+            {
+                return null;
+            }
+            return this.ServerNodes[Index].Attributes["Name"].Value;
+        }
+
+        public void ApplyTargetServer(int Target)
+        {
+            ScriptEngine.Script.LaunchScriptFromFile(this.GetServerNameFromIndex(Target), this.GetScriptFileName());
+            InSystem.WriteConfig("Settings", "Server",this.GetServerNameFromIndex(Target));
+        }
+
+        public string GetServerIco(int Index) {
+            if (Index < 0 && Index > (this.ServerNodes.Count - 1))
+            {
+                return null;
+            }
+            return this.ServerNodes[Index].Attributes["Ico"].Value;
+        }
+
+        public int GetServerType() {
+            if (!RunInCheck.IsCheckedPath) {
+                return -1;
+            }
+            
+            string ServerCode = InSystem.ReadConfig("Settings", "Server");
+            int Loop = -1;
+            foreach (XmlNode tempNode in this.ServerNodes) {
+                Loop += 1;
+                if (ScriptEngine.Script.LaunchCheckScriptFromFile(tempNode.Attributes["CheckPoint"].Value,this.GetScriptFileName())) {
+                    return Loop;
+                }
+            }
+            return -1;
+        }
+
+        public string GetServerURL(int Index) {
+            if (Index < 0 && Index > (this.ServerNodes.Count - 1)) {
+                return null;
+            }
+            return this.ServerNodes[Index].Attributes["Url"].Value;
+        }
+
+        public string StartupExe(int Index) {
+            if (Index < 0 && Index > (this.ServerNodes.Count - 1))
+            {
+                return null;
+            }
+            return this.ServerNodes[Index].Attributes["Startup"].Value;
+        }
+    }
+
+
     public class InSystem
     {        
         public static void ResetBackup()
@@ -343,7 +387,7 @@ namespace GenshinImpact_ServerConverter
             {
                 if (RunInCheck.IsCheckedPath)
                 {
-                    System.IO.File.Copy(DataOperat.GamePath + "\\config.ini", Environment.CurrentDirectory + "\\GameConfig.back", true);
+                    System.IO.File.Copy(DataOperat.GamePath + "\\config.ini", RunInCheck.UserDataDirectory + "\\GameConfig.back", true);
                 }
             }
             catch (Exception exp)
@@ -353,13 +397,24 @@ namespace GenshinImpact_ServerConverter
 
         }
 
+        public static void CheckedPath() {
+            if (!RunInCheck.IsCheckedPath)
+            {
+                throw new Exception("Failed to load settings!");
+
+            }
+            else
+            {
+                throw new Exception("Successfully loaded settings!");
+            }
+        }
         public static void ResetSetting()
         {
             try
             {
-                if (System.IO.File.Exists(Environment.CurrentDirectory + "\\App.ini"))
+                if (System.IO.File.Exists(RunInCheck.UserDataDirectory + "\\App.ini"))
                 {
-                    System.IO.File.Delete(Environment.CurrentDirectory + "\\App.ini");
+                    System.IO.File.Delete(RunInCheck.UserDataDirectory + "\\App.ini");
                 }
             }
             catch (Exception exp)
@@ -382,9 +437,9 @@ namespace GenshinImpact_ServerConverter
         {
             try
             {
-                if (System.IO.File.Exists(Environment.CurrentDirectory + "\\GameConfig.back"))
+                if (System.IO.File.Exists(RunInCheck.UserDataDirectory + "\\GameConfig.back"))
                 {
-                    System.IO.File.Delete(Environment.CurrentDirectory + "\\GameConfig.back");
+                    System.IO.File.Delete(RunInCheck.UserDataDirectory + "\\GameConfig.back");
                 }
 
             }
@@ -394,13 +449,17 @@ namespace GenshinImpact_ServerConverter
             }
         }
 
-        public static void LaunchGame(bool WaitFor,bool Collect) {
+        public static void LaunchGame(int GameIndex,bool WaitFor,bool Collect) {
             if (!RunInCheck.IsCheckedPath) {
-                return;
+                throw new Exception("Cann't load locate configure.");
             }
-
+            string GameFile = DataOperat.GamePath + "\\" + RunInCheck.meLaunch.StartupExe(GameIndex);
+            if (!System.IO.File.Exists(GameFile)) {
+                throw new Exception("Cann't Find The Target:"+ GameFile);
+            }
             System.Diagnostics.Process GameProcess = new System.Diagnostics.Process();
-            GameProcess.StartInfo.FileName = DataOperat.GamePath + "\\YuanShen.exe";
+            //
+            GameProcess.StartInfo.FileName = GameFile;
             GameProcess.StartInfo.WorkingDirectory = DataOperat.GamePath;
 
             //执行游戏前进行一次垃圾回收释放内存空间。
@@ -428,19 +487,6 @@ namespace GenshinImpact_ServerConverter
             }
         }
 
-        public static int StringIndex(string stringCode) {
-            if (stringCode == "official")
-            {
-                return 0;
-            }
-            else if (stringCode == "bilibili") {
-                return 1;
-            }
-            else {
-                return -1;
-            }
-        }
-
         public static void HidConsoleWindow(string ConsoleTitle) {
              RunInCheck.intptr = Win_API.FindWindow("ConsoleWindowClass", ConsoleTitle);
                          if (RunInCheck.intptr != IntPtr.Zero)
@@ -458,6 +504,15 @@ namespace GenshinImpact_ServerConverter
             }
         }
 
+        public static void WriteConfig(string App,string Key,string Value) {
+            Win_API.WritePrivateProfileString(App, Key, Value, RunInCheck.UserDataDirectory + "\\App.ini");
+        }
+
+        public static string ReadConfig(string App,string Key) {
+            StringBuilder tempString = new StringBuilder();
+            Win_API.GetPrivateProfileString(App,Key,"null",tempString,255, RunInCheck.UserDataDirectory + "\\App.ini");
+            return tempString.ToString();
+        }
         public static void AppExit(int Code) {
             if (RunInCheck.RestoreConsole)
             {
@@ -473,9 +528,9 @@ namespace GenshinImpact_ServerConverter
                     return;
                 }
 
-                if (System.IO.File.Exists(Environment.CurrentDirectory + "\\GameConfig.back"))
+                if (System.IO.File.Exists(RunInCheck.UserDataDirectory + "\\GameConfig.back"))
                 {
-                    System.IO.File.Copy(Environment.CurrentDirectory + "\\GameConfig.back", DataOperat.GamePath + "\\config.ini", true);
+                    System.IO.File.Copy(RunInCheck.UserDataDirectory + "\\GameConfig.back", DataOperat.GamePath + "\\config.ini", true);
                 }
 
             }
@@ -487,4 +542,5 @@ namespace GenshinImpact_ServerConverter
         }
 
     }
+
 }

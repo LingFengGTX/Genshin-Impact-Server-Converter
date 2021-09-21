@@ -28,7 +28,8 @@ namespace GenshinImpact_ServerConverter
             
             {//初始类构造:用于初始化此应用中必要的类 
                 RunInCheck.ChangeBackGround(this);//随机应用背景
-                
+
+                RunInCheck.meLaunch.RefreshServerList(this.ServerSelectBox);
 
                 if (!RunInCheck.IsCheckedPath)
                 {
@@ -43,29 +44,18 @@ namespace GenshinImpact_ServerConverter
             }
         }
         private void ReloadSetting() {
-            int LocationConfigureType;
+            int LocationConfigureType=RunInCheck.meLaunch.GetServerType();
 
-            if (RunInCheck.EnableXMLConfigure)
-            {
-                LocationConfigureType = RunInCheck.xmlSetter.GetServerType();
+            if (LocationConfigureType==-1) {
+                LogoImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/Icos/NoConfig.jpg", UriKind.Absolute)); RunInCheck.NoknowConfig = true;
             }
-            else {
-                LocationConfigureType = RunInCheck.memSetter.GetServerType();
-            }
-            
-            switch (LocationConfigureType)
-            {
-                case -1: {LogoImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/Icos/NoConfig.jpg", UriKind.Absolute)); RunInCheck.NoknowConfig = true; } ; break;
-                case 0: { ServerSelectBox.SelectedIndex = 0; }; break;
-                case 1: { ServerSelectBox.SelectedIndex = 1; }; break;
-
-            }
+            ServerSelectBox.SelectedIndex = LocationConfigureType;
             if (!RunInCheck.NoknowConfig) {
                 RunInCheck.IsFirstLaunch();
             }
             StringBuilder gameVersion = new StringBuilder();
             Win_API.GetPrivateProfileString("General", "game_version", "null", gameVersion, 255, DataOperat.GamePath + "\\Config.ini");
-            Label_GameVersion.Content = (string)FindResource("MainWindow_Label_GameVersion") +gameVersion.ToString();
+            Label_GameVersion.Content =(string)FindResource("MainWindow_Label_GameVersion") + gameVersion.ToString();
         }
 
         
@@ -115,13 +105,24 @@ namespace GenshinImpact_ServerConverter
                 GMessageBox.GMessageBoxClass.Show((string)FindResource("Error_MessageBoxTitle"), (string)FindResource("MainWindow_Label_PathError"), GMessageBox.GMessageBoxDialogType.Tip,this);
                 return;
             }
+
             this.MP4Player.Pause();
             this.Hide();
-            RunInCheck.IsWindowMinSize = true;//激活最小化以启动虚拟内存
-            InSystem.LaunchGame(true,true);
-            RunInCheck.IsWindowMinSize = false;
-            this.Show();
-            this.MP4Player.Play();
+            RunInCheck.IsWindowMinSize = true;//激活最小化以启用虚拟内存
+            try
+            {
+                InSystem.LaunchGame(ServerSelectBox.SelectedIndex, true, true);
+            }
+            catch (Exception exp)
+            {
+                MessageBox.Show(exp.Message, (string)FindResource("Error_MessageBoxTitle"), MessageBoxButton.OK,MessageBoxImage.Error);
+            }
+            finally {
+                RunInCheck.IsWindowMinSize = false;
+                this.Show();
+                this.MP4Player.Play();
+            }
+            
         }
 
         private void ServerSelectBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -141,49 +142,23 @@ namespace GenshinImpact_ServerConverter
 
             }
 
-            if (RunInCheck.EnableXMLConfigure)
+            try
             {
-                switch (ServerSelectBox.SelectedIndex)
-                {
-                    case 0:
-                        {
-                            LogoImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/Icos/Genshin_impact.jpg", UriKind.Absolute));
-                            RunInCheck.xmlSetter.ApplyTargetServer(0);
-                        }; break;
-                    case 1:
-                        {
-                            LogoImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/Icos/BiliBili_logo.jpg", UriKind.Absolute));
-                            RunInCheck.xmlSetter.ApplyTargetServer(1);
-                        }; break;
-                }
+                RunInCheck.meLaunch.ApplyTargetServer(ServerSelectBox.SelectedIndex);
             }
-            else {
-                switch (ServerSelectBox.SelectedIndex)
-                {
-                    case 0:
-                        {
-                            LogoImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/Icos/Genshin_impact.jpg", UriKind.Absolute));
-                            RunInCheck.memSetter.ApplyTargetServer(0);
-                        }; break;
-                    case 1:
-                        {
-                            LogoImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/Icos/BiliBili_logo.jpg", UriKind.Absolute));
-                            RunInCheck.memSetter.ApplyTargetServer(1);
-                        }; break;
-                }
+            catch {
+                return;
             }
+            LogoImage.ImageSource = new BitmapImage(new Uri(RunInCheck.meLaunch.GetServerIco(ServerSelectBox.SelectedIndex),UriKind.RelativeOrAbsolute));
         }
 
         private void LogoImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            
-            switch (ServerSelectBox.SelectedIndex) {
-                case -1:return;
-                case 0:Win_API.WinExec("explorer.exe \"https://ys.mihoyo.com \"", 15); break;
-                case 1: Win_API.WinExec("explorer.exe \"https://www.biligame.com/detail/?id=103496\"", 15); break;
-                
-            
+            if (ServerSelectBox.SelectedIndex == -1) {
+                return;
             }
+            Win_API.WinExec("explorer.exe \""+RunInCheck.meLaunch.GetServerURL(ServerSelectBox.SelectedIndex) +" \"", 15);
+
         }
 
         private void btn_SettingButton_Click(object sender, RoutedEventArgs e)
