@@ -80,5 +80,6 @@
     <s:String x:Key="SettingWindow_Button_OpenInTernminal">在终端中打开目录</s:String>
     <s:String x:Key="SettingWindow_DialogTitle_TerminalClose">提示</s:String>
     <s:String x:Key="SettingWindow_DialogContent_TerminalClose">你是否想要现在退出应用?</s:String>
+    <s:String x:Key="SettingWindow_Label_SourceCodeLink">GitHub:源代码开放</s:String>
 
 </ResourceDictionary>

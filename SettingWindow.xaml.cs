@@ -43,7 +43,6 @@ namespace GenshinImpact_ServerConverter
                 btn_ReSetBackStatues.Visibility = Visibility.Hidden;
             }
         }
-
         private void PlayClosingAu()
         {
 
@@ -101,12 +100,12 @@ namespace GenshinImpact_ServerConverter
                 }
                 WshShortcut shortcut = (WshShortcut)shell.CreateShortcut(shortcutPath);
                 shortcut.TargetPath = exePath;
-                shortcut.Arguments = null;
-                shortcut.Description = null;
-                shortcut.WorkingDirectory = RunInCheck.UserDataDirectory;
+                shortcut.Arguments =null;
+                shortcut.Description = "To run Genshin Impact Server Converter";
+                shortcut.WorkingDirectory = Environment.CurrentDirectory;
                 if (RunInCheck.IsCheckedPath)
                 {
-                    shortcut.IconLocation = DataOperat.GamePath+"\\Yuanshen.exe";
+                    shortcut.IconLocation = DataOperat.GamePath+"\\"+RunInCheck.meLaunch.StartupExe(RunInCheck.meLaunch.GetServerType());
                 }
                 else {
                     shortcut.IconLocation = exePath;
@@ -235,5 +234,9 @@ namespace GenshinImpact_ServerConverter
         }
         #endregion
 
+        private void GithubLinkShow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Win_API.WinExec("explorer.exe \"https://github.com/LingFengGTX/Genshin-Impact-Server-Converter.git\"", 15);
+        }
     }
 }

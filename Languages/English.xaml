@@ -79,4 +79,5 @@
     <s:String x:Key="SettingWindow_Button_OpenInTernminal">Open In Ternminal</s:String>
     <s:String x:Key="SettingWindow_DialogTitle_TerminalClose">Tip</s:String>
     <s:String x:Key="SettingWindow_DialogContent_TerminalClose">Do you want to exit now?</s:String>
+    <s:String x:Key="SettingWindow_Label_SourceCodeLink">GitHub:Source Code</s:String>
 </ResourceDictionary>

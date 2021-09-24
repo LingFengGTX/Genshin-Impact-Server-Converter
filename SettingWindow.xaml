@@ -41,7 +41,7 @@
             <Label Content="{StaticResource SettingWindow_title}" Margin="55,27,597,456" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="22" FontFamily="Microsoft YaHei UI Light"/>
             <Label Content="{StaticResource SettingWindow_TabButton_GernelSetting}" Margin="8,114,592,363" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="15" Background="#FFDFDFDF"/>
             <ScrollViewer Name="GridViewer" Margin="225,57,10,70" Background="Transparent" Style="{StaticResource ScrollBarStyle}" >
-                <Grid Background="Transparent" Height="394">
+                <Grid Background="Transparent" Height="512">
                     <Label Content="{StaticResource SettingWindow_Label_GamePath}" FontFamily="Microsoft YaHei" FontSize="18" Margin="20,20,38,0" Height="42" VerticalAlignment="Top"/>
                     <TextBox Cursor="Arrow" Focusable="False" Text="The install path will be show in here." x:Name="TargetPath" Background="#FFF6F5F3" FontSize="15" Margin="24,67,0,0" VerticalContentAlignment="Center" IsReadOnly="True" BorderBrush="Transparent" Foreground="#FFDEDCDD" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="400"/>
                     <Label Content="{StaticResource SettingWindow_Label_OtherFucation}"  FontFamily="Microsoft YaHei" FontSize="18" Margin="20,123,38,0" Height="41" VerticalAlignment="Top"/>
@@ -54,6 +54,7 @@
                     <Button Content="{StaticResource SettingWindow_Button_Validator}" Height="40" VerticalAlignment="Top" HorizontalAlignment="Left" Width="160" Margin="392,241,0,0" Name="btn_GameValidator" Style="{StaticResource Universal_ButtonStyle}" Click="btn_GameValidator_Click"/>
                     <Label Content="{StaticResource SettingWindow_Label_About}"  FontFamily="Microsoft YaHei" FontSize="18" Margin="20,320,38,0" Height="35" VerticalAlignment="Top"/>
                     <Label Content="{StaticResource SettingWindow_Label_About}"  FontFamily="Microsoft YaHei" FontSize="14" Margin="24,350,0,0" FontWeight="Bold" Foreground="#FFDCBC99" Name="VersionShow" Height="26" VerticalAlignment="Top"/>
+                    <Label Content="{StaticResource SettingWindow_Label_SourceCodeLink}"  FontFamily="Microsoft YaHei" FontSize="14" Margin="24,387,0,0" FontWeight="Bold" Foreground="#FFDCBC99" Name="GithubLinkShow" Height="26" VerticalAlignment="Top" MouseLeftButtonDown="GithubLinkShow_MouseLeftButtonDown" Cursor="Help"/>
                 </Grid>
             </ScrollViewer>
             <Grid Margin="276,452,32,59">
